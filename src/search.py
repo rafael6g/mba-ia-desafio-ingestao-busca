@@ -86,26 +86,22 @@ RESPONDA A "PERGUNTA DO USUÁRIO"
 """
 
 def realizar_busca(query, k=10):
-    # Lemos do .env para manter a segurança
     api_key = os.getenv("GOOGLE_API_KEY")
-    # Aqui usamos o nome correto do modelo que o Google exige agora
     model_name = os.getenv("GOOGLE_EMBEDDING_MODEL") 
     
-    # Criamos o objeto de embeddings com as travas necessárias para Windows
     embeddings = GoogleGenerativeAIEmbeddings(
         model=model_name,
         google_api_key=api_key,
-        transport="rest" # Isso evita que o código procure credenciais que não existem
+        transport="rest" 
     )
     
     vectorstore = PGVector(
         connection=os.getenv("DATABASE_URL"),
         embeddings=embeddings,
         collection_name=os.getenv("PG_VECTOR_COLLECTION_NAME", "pdf_collection"),
-        use_jsonb=True # Garante compatibilidade com o que foi ingerido
+        use_jsonb=True 
     )
 
-    # Retorna (Documento, Score)
     return vectorstore.similarity_search_with_score(query, k=k)
 
 def search_prompt(contexto, pergunta):

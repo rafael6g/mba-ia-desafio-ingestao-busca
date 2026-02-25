@@ -42,14 +42,13 @@ def ingest_pdf():
 
     vector_store.create_tables_if_not_exists()
 
-    # Ingestão em lotes de 5 chunks para não estourar a cota gratuita
     import time
     batch_size = 5
     for i in range(0, len(chunks), batch_size):
         batch = chunks[i:i + batch_size]
         print(f"   -> Enviando lote {i//batch_size + 1} de {len(chunks)//batch_size + 1}...")
         vector_store.add_documents(batch)
-        time.sleep(10) # Espera 2 segundos para respeitar o Rate Limit do Gemini
+        time.sleep(10)
 
     print("✅ Ingestão concluída com sucesso!")
 
